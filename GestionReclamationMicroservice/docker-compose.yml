@@ -44,7 +44,18 @@ services:
 
   # postgresql database    
 
-
+  user-management-service:
+    build:
+      context: C:\Users\Alaa\Desktop\5eme Twin\microservices\Micro-Services-SmartSchool\school-micro-user
+      dockerfile: dockerFile
+    container_name: management-service-container
+    image: management-service-image
+    networks:
+      - bored-network
+    depends_on:
+      - eureka-server
+    ports:
+      - "8060:8060"
 
   event-service:
     build:
