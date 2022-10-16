@@ -23,7 +23,7 @@ import com.microservice.forum.entities.Post;
 import com.microservice.forum.services.IForumService;
 
 @RestController
-@RequestMapping("posts")
+@RequestMapping("forums")
 public class ForumRestController {
 
 	@Autowired
