@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.esprit.microservices.job</groupId>
-	<artifactId>EurekaServer</artifactId>
+	<artifactId>Eureka-service</artifactId>
 	<version>1.0</version>
 	<name>EurekaServer</name>
 	<description>project for EurekaServer ms</description>
