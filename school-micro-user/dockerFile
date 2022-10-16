@@ -1,0 +1,4 @@
+From  openjdk:8-jdk
+Expose 8060
+ADD target/school-micro-user-1.0.jar school-management.jar
+ENTRYPOINT ["java","-jar","school-management.jar"]
