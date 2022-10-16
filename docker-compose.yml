@@ -1,20 +1,32 @@
-version: "2.6"
+
+version: "3.8"
+
 services:
-  # eureka server 
+
+
+# eureka server 
+
   eureka-server:
+
     build:
-      context: C:\Users\Alaa\eclipse-workspace\Eureka-server
+      context: ./Eureka-server/
       dockerfile: dockerFile
-    container_name: eureka-server-container
-    image: eureka-server-image
+    restart: always
+    container_name: eureka-server
+    image: eureka-server
     ports:
       - "8761:8761"
     networks:
       - bored-network
+      
+      
 
+      
+      
   # mysql database      
   eventdb:
-    container_name: eventdb
+    container_name: eventd
+    restart: always
     image: mysql
     networks:
       - bored-network
@@ -25,8 +37,7 @@ services:
       - dbvol2:/var/lib/mysql
     ports:
       - "3311:3306"
-    restart: always
-
+    
   # mysql2 database      
   reclamationdb:
     container_name: reclamationdb
@@ -36,17 +47,69 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=reclamation_data_base
-    volumes:
+    volumes: 
       - dbvol:/var/lib/mysql
     ports:
       - "3310:3306"
     restart: always
 
-  # postgresql database    
 
+# postgresql database    
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    networks:
+      - bored-network    
+    environment:
+      POSTGRES_PASSWORD: root   
+      POSTGRES_DB: candidat
+      POSTGRES_USER: postgres
+    ports:
+      - "2345:5432"
+
+ #  forum-service    
+  forum-service:
+
+    build:
+      context: ./forum-service
+      dockerfile: Dockerfile
+    container_name: forum-service
+    image: forum-service
+    networks:
+      - bored-network
+    depends_on:
+      - postgres
+      - eureka-server
+    ports:
+      - "8070:8080"
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/candidat
+      - spring.datasource.username=postgres
+      - spring.datasource.password=root
+      
+   # mongo database       
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_DATABASE: userdatabase
+    ports:
+      - "9590:9095"
+    volumes:
+      - mongo_dbv:/data/db/    
+    networks:
+      - bored-network
+      
+ #user managment service     
   user-management-service:
     build:
-      context: C:\Users\Alaa\Desktop\5eme Twin\microservices\Micro-Services-SmartSchool\school-micro-user
+      context: ./school-micro-user
       dockerfile: dockerFile
     container_name: management-service-container
     image: management-service-image
@@ -55,11 +118,21 @@ services:
     depends_on:
       - eureka-server
     ports:
-      - "8060:8060"
+      - "8060:8060" 
+      
+    environment:
+    
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - spring.data.mongodb.database=userdatabase
+      - spring.data.mongodb.port=9095
+      - spring.data.mongodb.auto-index-creation=true
+      - spring.data.mongodb.host=mongodb
+      - spring.data.mongodb.username=root
+      - spring.data.mongodb.password=123456
 
   event-service:
     build:
-      context: C:\Users\Alaa\eclipse-workspace\GestionEventsMicroService
+      context: ./GestionEventsMicroService
       dockerfile: dockerFile
     container_name: event-service-container
     image: event-service-image
@@ -82,7 +155,7 @@ services:
 
   reclamation-service:
     build:
-      context: C:\Users\Alaa\Desktop\5eme Twin\microservices\Micro-Services-SmartSchool\GestionReclamationMicroservice
+      context: ./GestionReclamationMicroservice/
       dockerfile: dockerFile
     container_name: reclamation-service-container
     image: reclamation-service-image
@@ -102,12 +175,18 @@ services:
       - spring.jpa.hibernate.ddl-auto=update
       - spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+      
+      
 networks:
   bored-network:
     name: bored-network
+    
 
 volumes:
   dbvol:
   dbvol2:
+  mongo_dbv:
 
 
+
+      
