@@ -1,20 +1,27 @@
-version: "2.6"
+version: "3.8"
+
 services:
-  # eureka server 
+
+  # eureka server
+
   eureka-server:
+
     build:
-      context: C:\Micro-Services-SmartSchool\Eureka-server
+      context: ./Eureka-server/
+
       dockerfile: dockerFile
-    container_name: eureka-server-container
-    image: eureka-server-image
+    restart: always
+    container_name: eureka-server
+    image: eureka-server
     ports:
       - "8761:8761"
     networks:
       - bored-network
 
-  # mysql database      
+  # mysql database
   eventdb:
-    container_name: eventdb
+    container_name: eventd
+    restart: always
     image: mysql
     networks:
       - bored-network
@@ -25,9 +32,8 @@ services:
       - dbvol2:/var/lib/mysql
     ports:
       - "3311:3306"
-    restart: always
 
-  # mysql2 database      
+  # mysql2 database
   reclamationdb:
     container_name: reclamationdb
     image: mysql
@@ -42,24 +48,68 @@ services:
       - "3310:3306"
     restart: always
 
-  # postgresql database    
+  # postgresql database
 
- # user-management-service:
-  #  build:
-   #   context: ..\school-micro-user
-    #  dockerfile: dockerFile
-   # container_name: management-service-container
-   # image: management-service-image
-   # networks:
-    #  - bored-network
-    #depends_on:
-     # - eureka-server
-    #ports:
-     # - "8060:8060"
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    networks:
+      - bored-network
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: candidat
+      POSTGRES_USER: postgres
+    ports:
+      - "2345:5432"
+
+  #  forum-service
+  forum-service:
+
+    build:
+      context: ./forum-service
+      dockerfile: Dockerfile
+    container_name: forum-service
+    image: forum-service
+    networks:
+      - bored-network
+    depends_on:
+      - postgres
+      - eureka-server
+    ports:
+      - "8070:8080"
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/candidat
+      - spring.datasource.username=postgres
+      - spring.datasource.password=root
+
+
+  #user managment service
+  user-management-service:
+    build:
+      context: ./school-micro-user
+      dockerfile: dockerFile
+    container_name: management-service-container
+    image: management-service-image
+    networks:
+      - bored-network
+    depends_on:
+      - eureka-server
+    ports:
+      - "8060:8060"
+
+
+    environment:
+
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - spring.data.mongodb.uri=mongodb+srv://jasser:jasser123@cluster0.oogwz.mongodb.net/?retryWrites=true&w=majority
+      - spring.data.mongodb.database=userdatabase
 
   event-service:
     build:
-      context: C:\Micro-Services-SmartSchool\GestionEventsMicroService
+      context: ./GestionEventsMicroService
       dockerfile: dockerFile
     container_name: event-service-container
     image: event-service-image
@@ -82,7 +132,7 @@ services:
 
   reclamation-service:
     build:
-      context: C:\Micro-Services-SmartSchool\GestionReclamationMicroservice
+      context: ./GestionReclamationMicroservice/
       dockerfile: dockerFile
     container_name: reclamation-service-container
     image: reclamation-service-image
@@ -128,6 +178,7 @@ services:
       SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: eventModule
       SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path= /events/*
      
+
 networks:
   bored-network:
     name: bored-network
@@ -135,5 +186,4 @@ networks:
 volumes:
   dbvol:
   dbvol2:
-
-
+  mongo_dbv:
