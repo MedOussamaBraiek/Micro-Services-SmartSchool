@@ -8,7 +8,6 @@ services:
 
     build:
       context: ./Eureka-server/
-
       dockerfile: dockerFile
     restart: always
     container_name: eureka-server
@@ -155,7 +154,7 @@ services:
       
   spring-cloud-gateway-service:
      build:
-       context: C:\Cloud-Gateway
+       context: ./Cloud-Gateway
        dockerfile: dockerFile
      container_name: spring-cloud-container
      image: spring-cloud-service-image
@@ -177,6 +176,13 @@ services:
       SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://event-service-container:8090/
       SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: eventModule
       SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path= /events/*
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://forum-service:8070/
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: forumModule
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path= /forums/*
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://management-service-container:8060/
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: userModule
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path= /api/*
+      
      
 
 networks:
