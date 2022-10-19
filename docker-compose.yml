@@ -154,29 +154,28 @@ services:
       
   spring-cloud-gateway-service:
      build:
-       context: ./Cloud-Gateway
-       dockerfile: dockerFile
+       context: ./cloud-gateway-api
+       dockerfile: Dockerfile
      container_name: spring-cloud-container
      image: spring-cloud-service-image
      networks:
        - bored-network
      depends_on:
-      - reclamation-service
-      - event-service
+
       - eureka-server
      ports:
       - "8051:8051"
     
-     environment: 
-     #- eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka 
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/ 
+     environment:
+
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
       SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://reclamation-service-container:8040/
       SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: reclamationModule
       SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path= /reclamations/*
       SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://event-service-container:8090/
       SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: eventModule
       SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path= /events/*
-      SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://forum-service:8070/
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://forum-service:8080/
       SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: forumModule
       SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path= /forums/*
       SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://management-service-container:8060/

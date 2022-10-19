@@ -22,6 +22,7 @@ import com.microservice.forum.entities.ForumType;
 import com.microservice.forum.entities.Post;
 import com.microservice.forum.services.IForumService;
 
+
 @RestController
 @RequestMapping("forums")
 public class ForumRestController {
