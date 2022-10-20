@@ -1,3 +1,4 @@
+
 #From  openjdk:8-jdk
 #Expose 8050
 #ADD target/GestionReclamationMicroservice-0.0.1-SNAPSHOT.jar Reclamation.jar
@@ -22,3 +23,4 @@ WORKDIR /app
 COPY --from=MAVEN_BUILD /build/target/GestionReclamationMicroservice-0.0.1-SNAPSHOT.jar  /app/
 
 ENTRYPOINT ["java", "-jar", "GestionReclamationMicroservice-0.0.1-SNAPSHOT.jar"]
+
