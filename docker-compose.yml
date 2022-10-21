@@ -1,14 +1,9 @@
 version: "3.8"
-
 services:
-
-  # eureka server
-
   eureka-server:
-
     build:
       context: ./Eureka-server/
-      dockerfile: dockerFile
+      dockerfile: Dockerfile
     restart: always
     container_name: eureka-container
     image: eureka-image
@@ -16,8 +11,16 @@ services:
       - "8761:8761"
     networks:
       - bored-network
-#------------------------------------------------------------Database------------------------------------------------------------
-  # mysql database event-service
+  userDB:
+    container_name: userDB-container
+    image: mongo
+    restart: always
+    networks:
+      - bored-network
+    ports:
+      - "27017:27017"
+    volumes:
+      - userVolume:/data/db
   eventDB:
     container_name: eventDB-container
     restart: always
@@ -31,7 +34,6 @@ services:
       - eventVolume:/var/lib/mysql
     ports:
       - "3311:3306"
-  # mysql database reclamation-service
   reclamationDB:
     container_name: reclamationDB-container
     image: mysql
@@ -45,9 +47,6 @@ services:
     ports:
       - "3310:3306"
     restart: always
-
-  # postgresql database forum-service
-
   fourmDB:
     container_name: fourmDB-container
     image: postgres
@@ -56,11 +55,10 @@ services:
       - bored-network
     environment:
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: 
+      POSTGRES_DB: fourmdatabase
       POSTGRES_USER: postgres
     ports:
       - "2345:5432"
-  # postgresql database club-service
   clubDB:
     container_name: clubDB-container
     image: postgres
@@ -75,27 +73,33 @@ services:
       - clubVolume:/var/lib/postgresql/data
     ports:
       - "2346:5432"
-  # nosql database user-service
-  userDB:
-    container_name: userDB-container
+  nodeDB:
+    container_name: nodeDB-container
     image: mongo
     restart: always
     networks:
       - bored-network
     ports:
-      - "27017:27017"
+      - "27019:27017"
     volumes:
-      - userVolume:/data/db
-  
+      - nodeVolume:/data/db
+  courseDB:
+    container_name: courseDB-container
+    image: mongo
+    restart: always
+    networks:
+      - bored-network
+    ports:
+      - "27018:27017"
+    volumes:
+      - courseVolume:/data/db
  
-  # ---------------------------------------services----------------------------------------------------
-  #  forum-service
   forum-service:
     build:
       context: ./forum-service
       dockerfile: Dockerfile
     container_name: forum-container
-    image: forum-service
+    image: forum-image
     networks:
       - bored-network
     depends_on:
@@ -108,13 +112,10 @@ services:
       - spring.datasource.url=jdbc:postgresql://fourmDB:5432/fourmdatabase
       - spring.datasource.username=postgres
       - spring.datasource.password=root
-
-
-  #user  service
   user-service:
     build:
       context: ./school-micro-user
-      dockerfile: dockerFile
+      dockerfile: Dockerfile
     container_name: user-container
     image: user-image
     networks:
@@ -125,17 +126,15 @@ services:
     ports:
       - "8060:8060"
 
-
     environment:
 
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
       - spring.data.mongodb.uri=mongodb://userDB:27017/userdatabase
       - spring.data.mongodb.database=userdatabase
-
   event-service:
     build:
       context: ./GestionEventsMicroService
-      dockerfile: dockerFile
+      dockerfile: Dockerfile
     container_name: event-service-container
     image: event-service-image
     networks:
@@ -154,11 +153,10 @@ services:
       - spring.jpa.hibernate.ddl-auto=update
       - spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-
   reclamation-service:
     build:
       context: ./GestionReclamationMicroservice/
-      dockerfile: dockerFile
+      dockerfile: Dockerfile
     container_name: reclamation-container
     image: reclamation-image
     networks:
@@ -177,13 +175,12 @@ services:
       - spring.jpa.hibernate.ddl-auto=update
       - spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-#club-service
   club-service:
     build:
       context: ./club-service
       dockerfile: Dockerfile
-    container_name: club-service
-    image: club-service
+    container_name: club-container
+    image: club-image
     networks:
       - bored-network
     depends_on:
@@ -196,48 +193,51 @@ services:
       - spring.datasource.url=jdbc:postgresql://clubDB:5432/club-service
       - spring.datasource.username=postgres
       - spring.datasource.password=root
-      
-  spring-cloud-gateway-service:
-     build:
-       context: ./Cloud-Gateway
-       dockerfile: dockerFile
-     container_name: spring-cloud-container
-     image: spring-cloud-service-image
-     networks:
-       - bored-network
-     depends_on:
-      - reclamation-service
-      - event-service
+  course-service:
+    build:
+      context: ./course-service
+      dockerfile: Dockerfile
+    container_name: course-container
+    image: course-image
+    networks:
+      - bored-network
+    depends_on:
+      - courseDB
       - eureka-server
-     ports:
-      - "8051:8051"
-    
-     environment: 
-     #- eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka 
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/ 
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://reclamation-service-container:8040/
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: reclamationModule
-      SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path= /reclamations/*
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://event-service-container:8090/
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: eventModule
-      SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path= /events/*
-      SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://forum-service:8070/
-      SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: forumModule
-      SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path= /forums/*
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://management-service-container:8060/
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: userModule
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path= /api/*
+    ports:
+      - "9090:9090"
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - spring.data.mongodb.uri=mongodb://courseDB:27017/course
+      - spring.data.mongodb.database=course
+  node-service:
+    build:
+      context: ./node-service
+      dockerfile: Dockerfile
+    container_name: node-container
+    image: node-image
+    networks:
+      - bored-network
+    depends_on:
+      - eureka-server
+      - nodeDB
+    ports:
+      - "5000:5000"
+    environment:
+      - eurekaHost=eureka-server
+      - eurekaPort=8761
       
-     
+   
 networks:
   bored-network:
     name: bored-network
-  
 volumes:
   eventVolume:
   reclamationVolume:
   userVolume:
   clubVolume:
   forumVolume:
+  courseVolume:
+  nodeVolume:
   
   
