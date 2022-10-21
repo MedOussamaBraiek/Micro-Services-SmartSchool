@@ -1,0 +1,23 @@
+server:
+  port: 8051
+  
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+      - id: reclamationModule
+        uri: http://localhost:8040/
+        predicates:
+        - Path=/reclamations/**
+      - id: eventModule
+        uri: http://localhost:8090/
+        predicates:
+        - Path=/events/**
+     

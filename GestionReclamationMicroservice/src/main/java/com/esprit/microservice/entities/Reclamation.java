@@ -9,9 +9,10 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-
+import com.google.common.base.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Reclamation implements Serializable {
 	private static final long serialVersionUID = -7291192279156300175L;
 
@@ -29,8 +31,8 @@ public class Reclamation implements Serializable {
 	private String title ;
 	private String content ;
 	private Boolean status;
-	private String owner;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	private Integer ownerId;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date ;
 	
 
