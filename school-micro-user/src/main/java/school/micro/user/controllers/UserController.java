@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import school.micro.user.models.Role;
 import school.micro.user.models.User;
 import school.micro.user.services.UserService;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,6 +48,7 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(){
+
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
@@ -63,9 +67,13 @@ public class UserController {
         userService.assignRoleToUser(form.getUserName(),form.getRoleName());
         return ResponseEntity.ok().build();
     }
-    
-   
-    
+
+
+    @GetMapping(value = "/username")
+    @ResponseBody
+    public User currentUserName(Principal principal) {
+        return userService.getUser(principal.getName());
+    }
     
     
     @GetMapping("/refresh")

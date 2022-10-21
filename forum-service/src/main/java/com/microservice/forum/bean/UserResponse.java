@@ -1,20 +1,21 @@
-package school.micro.user.models;
+package com.microservice.forum.bean;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Collection;
-@Document(collection = "users")
+
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    @Id
+public class UserResponse {
+
     private String id ;
     private String firstName ;
     private String lastName ;
@@ -22,8 +23,7 @@ public class User {
     private String email ;
     private String password ;
     private int phone ;
-    @DBRef
-    private Collection<Role> roles =new ArrayList<>() ;
+    private Collection roles =new ArrayList<>() ;
 
 
 }

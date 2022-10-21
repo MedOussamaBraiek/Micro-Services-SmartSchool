@@ -1,8 +1,11 @@
 package com.microservice.forum.controllers;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
+import com.microservice.forum.bean.UserResponse;
+import com.microservice.forum.client.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,10 @@ import com.microservice.forum.entities.ForumType;
 import com.microservice.forum.entities.Post;
 import com.microservice.forum.services.IForumService;
 
+import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 
 @RestController
 @RequestMapping("forums")
@@ -29,15 +36,18 @@ public class ForumRestController {
 
 	@Autowired
 	IForumService iForumService;
+	@Autowired
+	UserClient userClient;
 
-	@PostMapping("/add")
+
+	@PostMapping
 	public ResponseEntity<Forum> addPost(@RequestBody Forum forum) {
 
 		return new ResponseEntity<Forum>(iForumService.addForum(forum), HttpStatus.CREATED);
 
 	}
 
-	@PutMapping("/update")
+	@PutMapping
 	public ResponseEntity<Forum> update(@RequestBody Forum forum) {
 
 		return new ResponseEntity<Forum>(iForumService.updateForum(forum), HttpStatus.OK);
@@ -75,7 +85,7 @@ public class ForumRestController {
 	}
 
 	@PutMapping("/forum/{id}")
-	public ResponseEntity<Forum> assignPostsToForums(@PathVariable("id") int id, List<Post> posList) {
+	public ResponseEntity<Forum> assignPostsToForums(@PathVariable("id") int id, @RequestBody List <Post> posList) {
 
 		return new ResponseEntity<Forum>(iForumService.assignPostsToForums(posList, id), HttpStatus.OK);
 	}
@@ -92,6 +102,13 @@ public class ForumRestController {
 	public ResponseEntity<List<Forum>> getForumByDate(@RequestParam("type") ForumType type) {
 
 		return new ResponseEntity<List<Forum>>(iForumService.findForumsByType(type), HttpStatus.OK);
+
+	}
+
+	@GetMapping("/user")
+	public UserResponse getUser(HttpServletRequest request) {
+
+		return userClient.getUser(request.getHeader(AUTHORIZATION));
 
 	}
 

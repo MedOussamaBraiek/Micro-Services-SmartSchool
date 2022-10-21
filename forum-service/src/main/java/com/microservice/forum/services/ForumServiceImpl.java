@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.microservice.forum.entities.Forum;
@@ -17,6 +19,9 @@ public class ForumServiceImpl implements IForumService {
 
 	@Autowired
 	ForumRepository forumRepository;
+
+	@Autowired
+IPostService iPostService;
 
 	@Override
 	public Forum addForum(Forum f) {
@@ -45,6 +50,16 @@ public class ForumServiceImpl implements IForumService {
 	@Override
 	public List<Forum> getAllForums() {
 		// TODO Auto-generated method stub
+//		Forum forum = Forum
+//				.builder()
+//				.id(3)
+//				.created(null)
+//				.createdBy(null)
+//				.title("jasser")
+//				.build();
+//		System.out.println(forum.toString());
+//		Example<Forum> employeeExample = Example.of(forum);
+//		return forumRepository.findAll(employeeExample);
 		return forumRepository.findAll();
 	}
 
@@ -58,7 +73,12 @@ public class ForumServiceImpl implements IForumService {
 	@Override
 	public Forum assignPostsToForums(List<Post> posts, int id) {
 		// TODO Auto-generated method stub
-		this.getForumById(id).getPosts().addAll(posts);
+		for(Post p :posts){
+			iPostService.AddPost(p);
+			p.setForum(this.getForumById(id));
+			this.getForumById(id).getPosts().add(p);
+		}
+	//	this.getForumById(id).getPosts().addAll(posts);
 		return this.getForumById(id);
 	}
 

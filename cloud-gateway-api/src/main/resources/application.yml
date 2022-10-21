@@ -23,7 +23,7 @@ spring:
         - id: forumModule
           uri: http://localhost:8080/
           predicates:
-            - Path=/forums/**
+            - Path=/forums/**,/posts/**
         - id: userModule
           uri: http://localhost:8060/
           predicates:
