@@ -100,6 +100,7 @@ services:
       dockerfile: Dockerfile
     container_name: forum-container
     image: forum-image
+    restart: always
     networks:
       - bored-network
     depends_on:
@@ -109,6 +110,9 @@ services:
       - "8070:8080"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - eureka.instance.preferIpAddress=true
+      - eureka.instance.leaseRenewalIntervalInSeconds=10
+      - eureka.instance.leaseExpirationDurationInSeconds=30
       - spring.datasource.url=jdbc:postgresql://fourmDB:5432/fourmdatabase
       - spring.datasource.username=postgres
       - spring.datasource.password=root
@@ -125,10 +129,14 @@ services:
       - userDB
     ports:
       - "8060:8060"
+    restart: always
 
     environment:
 
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - eureka.instance.preferIpAddress=true
+      - eureka.instance.leaseRenewalIntervalInSeconds=10
+      - eureka.instance.leaseExpirationDurationInSeconds=30
       - spring.data.mongodb.uri=mongodb://userDB:27017/userdatabase
       - spring.data.mongodb.database=userdatabase
   event-service:
@@ -137,6 +145,7 @@ services:
       dockerfile: Dockerfile
     container_name: event-service-container
     image: event-service-image
+    restart: always
     networks:
       - bored-network
     depends_on:
@@ -146,6 +155,9 @@ services:
       - "8090:8090"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - eureka.instance.preferIpAddress=true
+      - eureka.instance.leaseRenewalIntervalInSeconds=10
+      - eureka.instance.leaseExpirationDurationInSeconds=30
       - spring.datasource.url=jdbc:mysql://eventdb:3306/event_data_base?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
       - spring.datasource.username=root
       - spring.datasource.password=123456
@@ -159,6 +171,7 @@ services:
       dockerfile: Dockerfile
     container_name: reclamation-container
     image: reclamation-image
+    restart: always
     networks:
       - bored-network
     depends_on:
@@ -168,6 +181,9 @@ services:
       - "8040:8040"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - eureka.instance.preferIpAddress=true
+      - eureka.instance.leaseRenewalIntervalInSeconds=10
+      - eureka.instance.leaseExpirationDurationInSeconds=30
       - spring.datasource.url=jdbc:mysql://reclamationDB:3306/reclamation_data_base?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
       - spring.datasource.username=root
       - spring.datasource.password=123456
@@ -181,6 +197,7 @@ services:
       dockerfile: Dockerfile
     container_name: club-container
     image: club-image
+    restart: always
     networks:
       - bored-network
     depends_on:
@@ -190,6 +207,9 @@ services:
       - "9000:9000"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - eureka.instance.preferIpAddress=true
+      - eureka.instance.leaseRenewalIntervalInSeconds=10
+      - eureka.instance.leaseExpirationDurationInSeconds=30
       - spring.datasource.url=jdbc:postgresql://clubDB:5432/club-service
       - spring.datasource.username=postgres
       - spring.datasource.password=root
@@ -199,6 +219,7 @@ services:
       dockerfile: Dockerfile
     container_name: course-container
     image: course-image
+    restart: always
     networks:
       - bored-network
     depends_on:
@@ -208,6 +229,9 @@ services:
       - "9090:9090"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
+      - eureka.instance.preferIpAddress=true
+      - eureka.instance.leaseRenewalIntervalInSeconds=10
+      - eureka.instance.leaseExpirationDurationInSeconds=30
       - spring.data.mongodb.uri=mongodb://courseDB:27017/course
       - spring.data.mongodb.database=course
   node-service:
@@ -216,6 +240,7 @@ services:
       dockerfile: Dockerfile
     container_name: node-container
     image: node-image
+    restart: always
     networks:
       - bored-network
     depends_on:
@@ -224,9 +249,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - eurekaHost=eureka-server
-      - eurekaPort=8761
-      
+      - EUREKA_HOST=eureka-server
+      - EUREKA_PORT=8761      
    
 networks:
   bored-network:
