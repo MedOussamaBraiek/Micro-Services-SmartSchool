@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 
@@ -53,8 +55,8 @@ public  class ReclamationService implements IReclamationService {
 	}
 
 	@Override
-	public List<Reclamation> getReclamationsByOwner(String name) {
-		List<Reclamation>reclamations=reclamationRepositrory.findReclamationsByOwner(name);
+	public List<Reclamation> getReclamationsByOwner(int ownerId) {
+		List<Reclamation>reclamations=reclamationRepositrory.findReclamationsByOwnerId(ownerId);
 		return reclamations;
 	}
 
@@ -68,14 +70,57 @@ public  class ReclamationService implements IReclamationService {
 	public Reclamation updateReclamationByOwner(int id, Reclamation newreclamation) {
 		// TODO Auto-generated method stub
 		Reclamation r = reclamationRepositrory.findById(id).get();
-		r.setTitle(newreclamation.getTitle());
-		r.setContent(newreclamation.getContent());
-		r.setDate(newreclamation.getDate());
-		r.setStatus(newreclamation.getStatus());
+		if(newreclamation.getTitle()!= null) {
+			r.setTitle(newreclamation.getTitle());
+		}
+		if(newreclamation.getContent()!= null) {
+			r.setContent(newreclamation.getContent());
+		}
+		if(newreclamation.getDate()!= null) {
+			r.setDate(newreclamation.getDate());
+		}
+		if(newreclamation.getStatus()!= null) {
+			r.setStatus(newreclamation.getStatus());
+		}
+		
 		return reclamationRepositrory.save(r);
 	
 			}
 
+
+
+
+	@Override
+	public List<Reclamation> getReclamationsBetweenTwoDate(Date startDate, Date endDate) {
+		return reclamationRepositrory.findReclamationBetweentwoDates(startDate, endDate);
+	}
+
+
+
+
+	@Override
+	public List<Reclamation> getfilterReclamations(String title, boolean status, Integer ownerId,Date startDate,Date endDate) {
+		// TODO Auto-generated method stub
+	  //Reclamation example=Reclamation.builder().title(title).ownerId(ownerId).build();
+	//System.out.println(example);
+		//return reclamationRepositrory.findAll(Example.of(example));
+		return reclamationRepositrory.findFiltredReclamation(title, status, ownerId,startDate,endDate);
+	}
+	/*ExampleMatcher matcher = ExampleMatcher.matching()
+			.withMatcher("title", ExampleMatcher.GenericPropertyMatchers.contains())
+		      .withMatcher("content", ExampleMatcher.GenericPropertyMatchers.contains())
+		      .withMatcher("ownerId", ExampleMatcher.GenericPropertyMatchers.contains());*/
+
+
+
+
+	@Override
+	public Reclamation verifyReclamationByAdmin(int id, boolean status) {
+		// TODO Auto-generated method stub
+		Reclamation reclamation = reclamationRepositrory.findById(id).get();
+		reclamation.setStatus(status);
+		return 	reclamationRepositrory.save(reclamation);
+	}
 	
 
 	
