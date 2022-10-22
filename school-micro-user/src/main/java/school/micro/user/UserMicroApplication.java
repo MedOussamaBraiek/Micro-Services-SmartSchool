@@ -14,10 +14,15 @@ import school.micro.user.models.User;
 import school.micro.user.services.UserService;
 
 @SpringBootApplication
-public class ReserveveloMicroUserApplication {
+
+public class UserMicroApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ReserveveloMicroUserApplication.class, args);
+        SpringApplication.run(UserMicroApplication.class, args);
+    }
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder() ;
     }
     /*
   @Bean
@@ -33,9 +38,6 @@ public class ReserveveloMicroUserApplication {
       };
   }
   */
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder() ;
-    }
+    
 
 }

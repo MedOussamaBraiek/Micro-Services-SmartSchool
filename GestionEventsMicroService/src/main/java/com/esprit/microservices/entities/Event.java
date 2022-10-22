@@ -33,6 +33,7 @@ public class Event implements Serializable {
 	private int id ;
 	private String title ;
 	private String description ;
+	private String ownerid ;
 	@Enumerated(EnumType.STRING)
 	private EventType type ;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

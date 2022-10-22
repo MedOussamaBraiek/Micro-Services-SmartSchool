@@ -1,7 +1,11 @@
 package com.esprit.microservices.contollers;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.esprit.microservices.bean.UserResponse;
+import com.esprit.microservices.client.UserClient;
 import com.esprit.microservices.entities.Event;
 import com.esprit.microservices.services.IServiceEvent;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/events")
@@ -27,9 +34,12 @@ public class EventController {
 
 	@Autowired
 	IServiceEvent serviceEvent ;
-	
+	@Autowired
+    UserClient userClient;
 	@PostMapping("/add")
-	public ResponseEntity<Event> addEvent (@RequestBody Event event){
+	public ResponseEntity<Event> addEvent (@RequestBody Event event,HttpServletRequest request){
+	    UserResponse user= userClient.getUser(request.getHeader(AUTHORIZATION));
+	    event.setOwnerid(user.getId());
 		return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);
 	}
 	@PutMapping("/update/{id}")

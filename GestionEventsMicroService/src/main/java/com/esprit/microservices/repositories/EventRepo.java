@@ -19,5 +19,9 @@ public interface EventRepo extends JpaRepository<Event, Integer> {
 
 	@Query("select e from Event e where e.eventDate = :date")
 	public List<Event> findEventByDate(@Param("date")Date date);
+	
+	@Query("select e from Event e where e.eventDate between :date1 and :date2")
+    public List<Event> findEventBetweenDates(@Param("date1")Date date,@Param("date2")Date date2);
+
 
 }
