@@ -55,7 +55,7 @@ public  class ReclamationService implements IReclamationService {
 	}
 
 	@Override
-	public List<Reclamation> getReclamationsByOwner(int ownerId) {
+	public List<Reclamation> getReclamationsByOwner(String ownerId) {
 		List<Reclamation>reclamations=reclamationRepositrory.findReclamationsByOwnerId(ownerId);
 		return reclamations;
 	}

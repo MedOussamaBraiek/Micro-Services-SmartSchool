@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     
-   
+    @GetMapping(value = "/username")
+    @ResponseBody
+    public User currentUserName(Principal principal) {
+        return userService.getUser(principal.getName());
+    }
     
     
     

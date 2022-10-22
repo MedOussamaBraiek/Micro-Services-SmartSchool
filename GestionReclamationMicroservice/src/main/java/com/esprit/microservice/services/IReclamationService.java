@@ -15,7 +15,7 @@ public interface IReclamationService {
 	public List<Reclamation> getReclamations ();
 	public Reclamation getReclamationById(int id);
 	public List<Reclamation> getReclamationsByTitle(String title);
-	public List<Reclamation> getReclamationsByOwner(int ownerId);
+	public List<Reclamation> getReclamationsByOwner(String ownerId);
 	public List<Reclamation> getReclamationsByDate(Date date);
 	public List<Reclamation> getReclamationsBetweenTwoDate(Date startDate,Date endDate);
 	public List<Reclamation> getfilterReclamations(String title,boolean status,Integer ownerId,Date startDate,Date endDate);

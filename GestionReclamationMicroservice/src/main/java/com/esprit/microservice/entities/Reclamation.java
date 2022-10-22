@@ -31,7 +31,7 @@ public class Reclamation implements Serializable {
 	private String title ;
 	private String content ;
 	private Boolean status;
-	private Integer ownerId;
+	private String ownerId;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date ;
 	

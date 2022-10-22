@@ -3,6 +3,8 @@ package com.esprit.microservice.controllers;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -18,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.esprit.microservice.bean.UserResponse;
+import com.esprit.microservice.client.UserClient;
 import com.esprit.microservice.entities.Reclamation;
 import com.esprit.microservice.services.IReclamationService;
-
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 
 @RestController
@@ -29,9 +33,12 @@ public class ReclamationController {
 
 	@Autowired
 	IReclamationService reclamationService ;
-	
+	@Autowired
+	UserClient userClient;
 	@PostMapping("/add")
-	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation){
+	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation,HttpServletRequest request){
+	UserResponse user=	userClient.getUser(request.getHeader(AUTHORIZATION));
+	reclamation.setOwnerId(user.getId());
 		reclamation.setStatus(false);
 		return new ResponseEntity<Reclamation>(reclamationService.addReclamation(reclamation),HttpStatus.CREATED);
 	}
@@ -64,7 +71,7 @@ public class ReclamationController {
 		return new ResponseEntity<List<Reclamation>>(reclamationService.getReclamationsByTitle(title),HttpStatus.OK);
 	}
 	@GetMapping("/ownerId")
-	public ResponseEntity<List<Reclamation>>getReclamationsByOwner(@RequestParam("ownerId")int ownerId){
+	public ResponseEntity<List<Reclamation>>getReclamationsByOwner(@RequestParam("ownerId")String ownerId){
 		return new ResponseEntity<List<Reclamation>>(reclamationService.getReclamationsByOwner(ownerId),HttpStatus.OK);
 	}
 	
@@ -82,6 +89,12 @@ public class ReclamationController {
 			@RequestParam(name="endDate",required=false)@DateTimeFormat(pattern = "yyyy-MM-dd")Date endDate
 			){
 		return new ResponseEntity<List<Reclamation>>(reclamationService.getfilterReclamations(title,status,ownerId,startDate,endDate),HttpStatus.OK);
+	}
+	@GetMapping("/user")
+	public UserResponse getUser(HttpServletRequest request) {
+        
+		return userClient.getUser(request.getHeader(AUTHORIZATION));
+        
 	}
 	
 }
