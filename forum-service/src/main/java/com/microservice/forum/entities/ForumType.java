@@ -1,5 +1,5 @@
 package com.microservice.forum.entities;
 
 public enum ForumType {
-	SPORT,FOOD,MUSIC,Education
+	SPORT,FOOD,MUSIC,EDUCATION
 }

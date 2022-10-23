@@ -36,7 +36,7 @@ public class Forum implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String title;
-	private String Topic;
+	private String topic;
 	@Enumerated(EnumType.STRING)
 	private ForumType type;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
