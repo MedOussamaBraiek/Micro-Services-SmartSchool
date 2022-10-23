@@ -24,6 +24,7 @@ import com.microservice.forum.services.IForumService;
 
 @RestController
 @RequestMapping("forums")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ForumRestController {
 
 	@Autowired
