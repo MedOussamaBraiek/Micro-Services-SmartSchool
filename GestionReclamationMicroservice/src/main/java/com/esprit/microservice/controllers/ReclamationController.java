@@ -31,6 +31,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/reclamations")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ReclamationController {
 
 	@Autowired
