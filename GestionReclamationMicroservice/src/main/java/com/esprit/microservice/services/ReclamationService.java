@@ -26,8 +26,6 @@ public  class ReclamationService implements IReclamationService {
 	}
 
 	
-		
-
 	@Override
 	public String deleteReclamation(int id) {
 		// TODO Auto-generated method stub
@@ -82,6 +80,9 @@ public  class ReclamationService implements IReclamationService {
 		if(newreclamation.getStatus()!= null) {
 			r.setStatus(newreclamation.getStatus());
 		}
+		if(newreclamation.getEventId()!= null) {
+			r.setEventId(r.getEventId());
+		}
 		
 		return reclamationRepositrory.save(r);
 	
@@ -99,7 +100,7 @@ public  class ReclamationService implements IReclamationService {
 
 
 	@Override
-	public List<Reclamation> getfilterReclamations(String title, boolean status, Integer ownerId,Date startDate,Date endDate) {
+	public List<Reclamation> getfilterReclamations(String title, boolean status, String ownerId,Date startDate,Date endDate) {
 		// TODO Auto-generated method stub
 	  //Reclamation example=Reclamation.builder().title(title).ownerId(ownerId).build();
 	//System.out.println(example);

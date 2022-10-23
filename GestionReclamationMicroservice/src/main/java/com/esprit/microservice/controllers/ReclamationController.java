@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.esprit.microservice.bean.EventResponse;
 import com.esprit.microservice.bean.UserResponse;
+import com.esprit.microservice.client.EventClient;
 import com.esprit.microservice.client.UserClient;
 import com.esprit.microservice.entities.Reclamation;
 import com.esprit.microservice.services.IReclamationService;
@@ -35,10 +37,12 @@ public class ReclamationController {
 	IReclamationService reclamationService ;
 	@Autowired
 	UserClient userClient;
+	@Autowired
+	EventClient eventClient;
 	@PostMapping("/add")
-	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation,HttpServletRequest request){
-	UserResponse user=	userClient.getUser(request.getHeader(AUTHORIZATION));
-	reclamation.setOwnerId(user.getId());
+	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation){
+	//UserResponse user=userClient.getUser(request.getHeader(AUTHORIZATION));
+	//reclamation.setOwnerId(user.getId());
 		reclamation.setStatus(false);
 		return new ResponseEntity<Reclamation>(reclamationService.addReclamation(reclamation),HttpStatus.CREATED);
 	}
@@ -83,18 +87,21 @@ public class ReclamationController {
 	public ResponseEntity<List<Reclamation>>getFiltredReclamations(
 			@RequestParam(name = "title",required = false)String title,
 			@RequestParam(name="status",required = false)boolean status,
-			@RequestParam(name="ownerId",required = false)Integer ownerId,
+			@RequestParam(name="ownerId",required = false)String ownerId,
 			//@RequestParam(name="date",required=false)@DateTimeFormat(pattern = "yyyy-MM-dd")Date date
 			@RequestParam(name="startDate",required=false)@DateTimeFormat(pattern = "yyyy-MM-dd")Date startDate,
 			@RequestParam(name="endDate",required=false)@DateTimeFormat(pattern = "yyyy-MM-dd")Date endDate
 			){
 		return new ResponseEntity<List<Reclamation>>(reclamationService.getfilterReclamations(title,status,ownerId,startDate,endDate),HttpStatus.OK);
 	}
-	@GetMapping("/user")
-	public UserResponse getUser(HttpServletRequest request) {
-        
-		return userClient.getUser(request.getHeader(AUTHORIZATION));
-        
+	@GetMapping("/event/{id}")
+	public EventResponse getEvent(@PathVariable("id")int id){
+		return eventClient.getEventById(id);
 	}
 	
+	@GetMapping("/reclamationevent/{id}")
+	public EventResponse getReclamtionEvent(@PathVariable("id")int id){
+		Reclamation reclamation =reclamationService.getReclamationById(id);
+		return eventClient.getEventById(reclamation.getEventId());
+	}
 }

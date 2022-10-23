@@ -34,6 +34,7 @@ public class Reclamation implements Serializable {
 	private String ownerId;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date ;
+	private Integer eventId;
 	
 
 }
