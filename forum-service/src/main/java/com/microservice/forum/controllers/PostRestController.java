@@ -28,14 +28,14 @@ public class PostRestController {
 	@Autowired
 	IPostService iPostService;
 
-	@PostMapping("/add")
+	@PostMapping
 	public ResponseEntity<Post> addPost(@RequestBody Post post) {
 
 		return new ResponseEntity<Post>(iPostService.AddPost(post), HttpStatus.CREATED);
 
 	}
 
-	@PutMapping("/update")
+	@PutMapping
 	public ResponseEntity<Post> update(@RequestBody Post post) {
 
 		return new ResponseEntity<Post>(iPostService.updatePost(post), HttpStatus.OK);
