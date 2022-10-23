@@ -36,10 +36,8 @@ public class ReclamationController {
 	@Autowired
 	UserClient userClient;
 	@PostMapping("/add")
-	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation,HttpServletRequest request){
-	UserResponse user=	userClient.getUser(request.getHeader(AUTHORIZATION));
-	reclamation.setOwnerId(user.getId());
-		reclamation.setStatus(false);
+	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation){
+	
 		return new ResponseEntity<Reclamation>(reclamationService.addReclamation(reclamation),HttpStatus.CREATED);
 	}
 	@PutMapping("/update/{id}")

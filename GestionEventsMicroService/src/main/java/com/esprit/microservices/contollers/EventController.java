@@ -1,7 +1,10 @@
 package com.esprit.microservices.contollers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,19 +21,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.esprit.microservices.bean.ReclamationResponse;
+import com.esprit.microservices.client.ReclamationClient;
 import com.esprit.microservices.entities.Event;
 import com.esprit.microservices.services.IServiceEvent;
-
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/events")
 public class EventController {
 
 	@Autowired
 	IServiceEvent serviceEvent ;
+	@Autowired
+    com.esprit.microservices.client.UserClient userClient;
+	@Autowired
+	ReclamationClient reclamationClient ;
 	
 	@PostMapping("/add")
-	public ResponseEntity<Event> addEvent (@RequestBody Event event){
-		return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);
+	public ResponseEntity<Event> addEvent (@RequestBody Event event,HttpServletRequest request){
+	   
+	        return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);
+	    
+		
 	}
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Event> updateEvent (@PathVariable("id") int id,@RequestBody Event event){
@@ -57,4 +69,14 @@ public class EventController {
 	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
 		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date),HttpStatus.OK);
 	}
+	
+	@GetMapping("/reclamations/{id}")
+	public ResponseEntity<List<ReclamationResponse>>getRecsByEvent(@PathVariable("id")int id){
+	    Event event = serviceEvent.getEvent(id);
+	    List<ReclamationResponse> reclamations = new ArrayList<>();
+	    event.getReclamations().stream().forEach(r->{
+	        reclamations.add(reclamationClient.getReclamationById(r));
+	    });
+        return new ResponseEntity<List<ReclamationResponse>>(reclamations ,HttpStatus.OK);
+    }
 }
