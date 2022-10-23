@@ -17,8 +17,6 @@ services:
     restart: always
     networks:
       - bored-network
-    ports:
-      - "27017:27017"
     volumes:
       - userVolume:/data/db
   eventDB:
@@ -32,8 +30,6 @@ services:
       - MYSQL_DATABASE=event_data_base
     volumes:
       - eventVolume:/var/lib/mysql
-    ports:
-      - "3311:3306"
   reclamationDB:
     container_name: reclamationDB-container
     image: mysql
@@ -44,8 +40,6 @@ services:
       - MYSQL_DATABASE=reclamation_data_base
     volumes:
       - reclamationVolume:/var/lib/mysql
-    ports:
-      - "3310:3306"
     restart: always
   fourmDB:
     container_name: fourmDB-container
@@ -57,8 +51,6 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: fourmdatabase
       POSTGRES_USER: postgres
-    ports:
-      - "2345:5432"
   clubDB:
     container_name: clubDB-container
     image: postgres
@@ -71,16 +63,12 @@ services:
       POSTGRES_USER: postgres
     volumes:
       - clubVolume:/var/lib/postgresql/data
-    ports:
-      - "2346:5432"
   nodeDB:
     container_name: nodeDB-container
     image: mongo
     restart: always
     networks:
       - bored-network
-    ports:
-      - "27019:27017"
     volumes:
       - nodeVolume:/data/db
   courseDB:
@@ -89,8 +77,6 @@ services:
     restart: always
     networks:
       - bored-network
-    ports:
-      - "27018:27017"
     volumes:
       - courseVolume:/data/db
  
@@ -106,8 +92,6 @@ services:
     depends_on:
       - fourmDB
       - eureka-server
-    ports:
-      - "8070:8080"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
       - eureka.instance.preferIpAddress=true
@@ -127,10 +111,7 @@ services:
     depends_on:
       - eureka-server
       - userDB
-    ports:
-      - "8060:8060"
     restart: always
-
     environment:
 
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
@@ -151,8 +132,6 @@ services:
     depends_on:
       - eventDB
       - eureka-server
-    ports:
-      - "8090:8090"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
       - eureka.instance.preferIpAddress=true
@@ -177,8 +156,6 @@ services:
     depends_on:
       - reclamationDB
       - eureka-server
-    ports:
-      - "8040:8040"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
       - eureka.instance.preferIpAddress=true
@@ -203,8 +180,6 @@ services:
     depends_on:
       - eureka-server
       - clubDB
-    ports:
-      - "9000:9000"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
       - eureka.instance.preferIpAddress=true
@@ -225,8 +200,6 @@ services:
     depends_on:
       - courseDB
       - eureka-server
-    ports:
-      - "9090:9090"
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka
       - eureka.instance.preferIpAddress=true
@@ -246,12 +219,59 @@ services:
     depends_on:
       - eureka-server
       - nodeDB
-    ports:
-      - "5000:5000"
     environment:
       - EUREKA_HOST=eureka-server
       - EUREKA_PORT=8761      
-   
+  api-gateway:
+    build:
+      context: ./cloud-gateway-api
+      dockerfile: Dockerfile
+    container_name: api-gateway-container
+    image: api-gateway-image
+    restart: always
+    networks:
+      - bored-network
+    depends_on:
+      - eureka-server
+      - user-service
+      - event-service
+      - reclamation-service
+      - club-service
+      - course-service
+      - node-service
+      - forum-service
+    ports:
+      - 8051:8051
+    environment:
+      eureka.client.service-url.defaultZone : http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_PREFERIPADDRESS : true
+      EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS: 10
+      EUREKA_INSTANCE_LEASEEXPIRATIONDURATIONINSECONDS: 30
+      SPRING_CLOUD_GATEWAY_ROUTES_0_ID: user-service
+      SPRING_CLOUD_GATEWAY_ROUTES_0_URI: http://user-service:8060
+      SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0: Path=/api/**
+      SPRING_CLOUD_GATEWAY_ROUTES_1_ID: event-service
+      SPRING_CLOUD_GATEWAY_ROUTES_1_URI: http://event-service:8090
+      SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0: Path=/events/**
+      SPRING_CLOUD_GATEWAY_ROUTES_2_ID: reclamation-service
+      SPRING_CLOUD_GATEWAY_ROUTES_2_URI: lb://reclamation
+      SPRING_CLOUD_GATEWAY_ROUTES_2_PREDICATES_0: Path=/reclamations/**
+      SPRING_CLOUD_GATEWAY_ROUTES_3_ID: club-service
+      SPRING_CLOUD_GATEWAY_ROUTES_3_URI: http://club-service:9000
+      SPRING_CLOUD_GATEWAY_ROUTES_3_PREDICATES_0: Path=/clubs/**
+      SPRING_CLOUD_GATEWAY_ROUTES_4_ID: course-service
+      SPRING_CLOUD_GATEWAY_ROUTES_4_URI: http://course-service:9090
+      SPRING_CLOUD_GATEWAY_ROUTES_4_PREDICATES_0: Path=/courses/**
+      SPRING_CLOUD_GATEWAY_ROUTES_5_ID: node-service
+      SPRING_CLOUD_GATEWAY_ROUTES_5_URI: http://node-service:5000
+      SPRING_CLOUD_GATEWAY_ROUTES_5_PREDICATES_0: Path=/nodes/**
+      SPRING_CLOUD_GATEWAY_ROUTES_6_ID: forum-service
+      SPRING_CLOUD_GATEWAY_ROUTES_6_URI: http://forum-service:8080
+      SPRING_CLOUD_GATEWAY_ROUTES_6_PREDICATES_0: Path=/forums/**
+      
+
+
+
 networks:
   bored-network:
     name: bored-network
