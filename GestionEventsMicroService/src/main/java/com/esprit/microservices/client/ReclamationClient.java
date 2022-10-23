@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.esprit.microservices.bean.ReclamationResponse;
 
-@FeignClient(name = "RECLAMATION",url = "localhost:8040")
+@FeignClient(name = "RECLAMATION")
 public interface ReclamationClient {
 
     @GetMapping(value = "/reclamations/{id}")

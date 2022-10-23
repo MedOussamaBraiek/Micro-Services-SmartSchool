@@ -3,6 +3,7 @@ package com.esprit.microservices.contollers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,10 +40,7 @@ public class EventController {
 	
 	@PostMapping("/add")
 	public ResponseEntity<Event> addEvent (@RequestBody Event event,HttpServletRequest request){
-	   
-	        return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);
-	    
-		
+	    return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);		
 	}
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Event> updateEvent (@PathVariable("id") int id,@RequestBody Event event){
@@ -66,9 +64,13 @@ public class EventController {
 		return new ResponseEntity<List<Event>>(serviceEvent.getEventByTitle(title),HttpStatus.OK);
 	}
 	@GetMapping("/date")
-	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
-		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date),HttpStatus.OK);
+	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date1")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,@RequestParam("date2")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date2){
+		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date1,date2),HttpStatus.OK);
 	}
+	@PostMapping("/assign")
+    public ResponseEntity<Event>assignRecs(@RequestParam("eventId")int Evid,@RequestParam("reclamationId")String recId){
+        return new ResponseEntity<Event>(serviceEvent.assignRecToEvent(Evid, recId),HttpStatus.OK);
+    }
 	
 	@GetMapping("/reclamations/{id}")
 	public ResponseEntity<List<ReclamationResponse>>getRecsByEvent(@PathVariable("id")int id){
@@ -79,4 +81,8 @@ public class EventController {
 	    });
         return new ResponseEntity<List<ReclamationResponse>>(reclamations ,HttpStatus.OK);
     }
+	@GetMapping("/eventsAndRecs")
+	public ResponseEntity<Map<String, Integer>>getEventsAndRecs(){
+	    return new ResponseEntity<Map<String,Integer>>(serviceEvent.getEventsAndnumberOfRecs(),HttpStatus.OK);
+	}
 }
