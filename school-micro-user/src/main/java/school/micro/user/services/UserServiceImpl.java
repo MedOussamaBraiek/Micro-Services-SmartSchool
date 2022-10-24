@@ -81,5 +81,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("getting all users");
         return userRepo.findAll();
     }
+    @Override
+    public User getUserById(String id) {
+        log.info("getting user by id");
+        return userRepo.findAppUserById(id);
+    }
 
 }

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -39,13 +40,10 @@ public class Forum implements Serializable {
 	private String topic;
 	@Enumerated(EnumType.STRING)
 	private ForumType type;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@CreationTimestamp
 	private Date created;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date closed;
-
-	private int createdBy;
-
+	private Date date;
+	private String createdBy;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "forum")
 	private List<Post> posts;
 }

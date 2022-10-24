@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -30,11 +31,14 @@ public class Post implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id ;
 	
-	private int postBy;
+	private String postBy;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date whenPosted ;
-	
+	private Date date ;
+
+	private String title;
+	private String content;
 	@ManyToOne
+	@JsonIgnore
 	private Forum  forum;
 }

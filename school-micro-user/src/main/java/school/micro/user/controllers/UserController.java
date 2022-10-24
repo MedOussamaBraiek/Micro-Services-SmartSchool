@@ -74,8 +74,12 @@ public class UserController {
     public User currentUserName(Principal principal) {
         return userService.getUser(principal.getName());
     }
-    
-    
+
+    @GetMapping(value = "/user/{id}")
+    @ResponseBody
+    public User getUserById(@PathVariable("id")String id) {
+        return userService.getUserById(id);
+    }
     
     @GetMapping("/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

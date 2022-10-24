@@ -14,6 +14,6 @@ import com.microservice.forum.entities.Forum;
 @Repository
 public interface ForumRepository   extends JpaRepository<Forum, Integer>{
 
-	@Query("select f from Forum f where date between f.created and f.closed")
+	@Query("select f from Forum f where :date between f.created and f.date")
 	public List<Forum> findForumByDate(@Param("date")Date date);
 }
