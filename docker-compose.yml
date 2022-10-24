@@ -19,6 +19,8 @@ services:
       - bored-network
     volumes:
       - userVolume:/data/db
+    ports: 
+      - "27017:27017"
   eventDB:
     container_name: eventDB-container
     restart: always
@@ -30,6 +32,8 @@ services:
       - MYSQL_DATABASE=event_data_base
     volumes:
       - eventVolume:/var/lib/mysql
+    ports:
+      - "3306:3306"
   reclamationDB:
     container_name: reclamationDB-container
     image: mysql
@@ -41,6 +45,8 @@ services:
     volumes:
       - reclamationVolume:/var/lib/mysql
     restart: always
+    ports:
+      - "3307:3306"
   fourmDB:
     container_name: fourmDB-container
     image: postgres
@@ -51,6 +57,10 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: fourmdatabase
       POSTGRES_USER: postgres
+    volumes: 
+     - forumVolume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   clubDB:
     container_name: clubDB-container
     image: postgres
@@ -63,6 +73,8 @@ services:
       POSTGRES_USER: postgres
     volumes:
       - clubVolume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
   nodeDB:
     container_name: nodeDB-container
     image: mongo
@@ -71,6 +83,8 @@ services:
       - bored-network
     volumes:
       - nodeVolume:/data/db
+    ports:
+      - "27018:27017"
   courseDB:
     container_name: courseDB-container
     image: mongo
@@ -79,6 +93,8 @@ services:
       - bored-network
     volumes:
       - courseVolume:/data/db
+    ports:
+      - "27019:27017"
  
   forum-service:
     build:
