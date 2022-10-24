@@ -18,6 +18,6 @@ public interface IReclamationService {
 	public List<Reclamation> getReclamationsByOwner(String ownerId);
 	public List<Reclamation> getReclamationsByDate(Date date);
 	public List<Reclamation> getReclamationsBetweenTwoDate(Date startDate,Date endDate);
-	public List<Reclamation> getfilterReclamations(String title,boolean status,Integer ownerId,Date startDate,Date endDate);
+	public List<Reclamation> getfilterReclamations(String title,boolean status,String ownerId,Date startDate,Date endDate);
 	
 }

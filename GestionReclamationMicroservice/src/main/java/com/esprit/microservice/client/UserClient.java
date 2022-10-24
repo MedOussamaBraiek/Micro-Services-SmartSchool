@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface UserClient {
 	
 	@GetMapping(value="/api/username", consumes = "application/json")
-
 	@Headers("Authorization: application/json")
 	    public UserResponse getUser(@RequestHeader("Authorization") String bearerToken) ;
 

@@ -1,6 +1,7 @@
 package com.esprit.microservice.entities;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,9 @@ public class Reclamation implements Serializable {
 	private String ownerId;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date ;
+
+	private Integer eventId;
+
 	
 
 }
