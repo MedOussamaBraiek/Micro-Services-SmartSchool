@@ -13,7 +13,7 @@ In this application we have a total of 9 microServices :
 | Club-Server-MS | This micro service is designed to manage all the School Clubs | 
 | Course-Server-MS | This micro service is designed to manage all the School Courses | 
 
-### MS & their PORTS
+### MSs & their PORTS
 | MicroService | local PORT |
 | ------------ | ----------- |
 | Api-Gateway | 8051 |
