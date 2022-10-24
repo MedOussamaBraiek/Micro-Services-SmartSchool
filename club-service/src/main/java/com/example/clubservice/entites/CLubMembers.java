@@ -19,9 +19,7 @@ public class CLubMembers {
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     private Long id;
-    private Long clubId;
+    @ManyToOne
+    private Club club;
     private Long memberId;
-    private String role;
-
-
 }

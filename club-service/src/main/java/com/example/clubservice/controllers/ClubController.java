@@ -89,14 +89,22 @@ public class ClubController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/subscribe")
-    public ResponseEntity<String> subscribeClub(@RequestBody CLubMembers cLubMembers) {
-       try{
-           CLubMembers newCLubMembers=clubMembersService.addClubMember(cLubMembers);
-           return new ResponseEntity<>("subscribed",HttpStatus.CREATED);
-       }
-       catch (Exception e) {
+    @PostMapping("/subscribe/{clubId}/{userId}")
+    public ResponseEntity<CLubMembers> subscribe(@PathVariable("clubId") Long clubId, @PathVariable("userId") Long userId) {
+        try {
+            CLubMembers clubMembers = clubMembersService.subscribe(clubId, userId);
+            return new ResponseEntity<>(clubMembers, HttpStatus.CREATED);
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/unsubscribe/{clubId}/{userId}")
+    public ResponseEntity<HttpStatus> unsubscribe(@PathVariable("clubId") Long clubId, @PathVariable("userId") Long userId) {
+        try {
+            clubMembersService.unsubscribe(clubId, userId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
