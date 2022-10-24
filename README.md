@@ -20,7 +20,7 @@ In this application we have a total of 9 microServices :
 | Eureka-Server | 8761 |
 | User-MS | 8060 |
 | Course-MS | 9090 |
-| Node-MS | 8761 |
+| Node-MS | 5000 |
 | Reclamation-MS | 8040 |
 | Forum-MS | 8080 |
 | Event-MS | 8090 |
