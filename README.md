@@ -25,3 +25,9 @@ In this application we have a total of 9 microServices :
 | Forum-MS | 8080 |
 | Event-MS | 8090 |
 | Club-MS | 9000 |
+
+### how to run this application :
+1- download the code of this repo 
+2- install all the dependencies 
+3- run `maven clean install` to all the micro services 
+4- go to the root folder then run `docker compose up`
