@@ -100,9 +100,9 @@ public class ForumRestController {
     }
 
     @PutMapping("/type")
-    public ResponseEntity<List<Forum>> getForumByDate(@RequestParam("type") ForumType type) {
+    public ResponseEntity<List<ForumResponse>> getForumByDate(@RequestParam("type") ForumType type) {
 
-        return new ResponseEntity<List<Forum>>(iForumService.findForumsByType(type), HttpStatus.OK);
+        return new ResponseEntity<>(iForumService.findForumsByType(type), HttpStatus.OK);
 
     }
 
@@ -117,6 +117,18 @@ public class ForumRestController {
     public UserResponse getUserById(@PathVariable("id")String id) {
         return userClient.getUserById(id);
 
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ForumResponse>>getFiltredForums(
+            @RequestParam(name = "title",required = false)String title,
+            @RequestParam(name="type",required = false)String type,
+            @RequestParam(name="userName",required=false)String userName,
+            @RequestParam(name="startDate",required=false)@DateTimeFormat(pattern = "yyyy-MM-dd")Date date
+
+    ){
+        return new ResponseEntity<>(iForumService.filterForums(title,type,userName,date),HttpStatus.OK);
     }
 
 

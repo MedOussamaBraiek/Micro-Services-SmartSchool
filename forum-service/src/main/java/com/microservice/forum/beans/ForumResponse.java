@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ForumResponse {
 
-    private int id;
+    private Integer id;
     private String title;
     private String topic;
     private ForumType type;

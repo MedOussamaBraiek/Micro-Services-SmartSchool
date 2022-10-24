@@ -22,5 +22,7 @@ public interface IForumService {
 
 	List <Forum>findForumsByDate(Date date);
 	
-	List <Forum>findForumsByType(ForumType f);
+	List <ForumResponse>findForumsByType(ForumType f);
+
+	List<ForumResponse> filterForums(String title, String type, String userName ,Date date);
 }
