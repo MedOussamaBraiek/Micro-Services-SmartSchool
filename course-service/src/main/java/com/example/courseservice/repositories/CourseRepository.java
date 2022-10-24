@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface CourseRepository extends MongoRepository<Course, String> {
-
-    @Query("{name : ?0}")                                         // SQL Equivalent : SELECT * FROM BOOK where author = ?
-    List<Course> getCoursesByName(String name);
-
-    
+    public List<Course> findByName(String name);
+    public List<Course> findByCategory(String category);
 }
 

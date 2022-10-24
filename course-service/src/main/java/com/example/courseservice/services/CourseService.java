@@ -6,55 +6,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService implements ICourseService {
-    @Autowired
-    private CourseRepository courseRepository;
+@Autowired
+private CourseRepository courseRepository;
 
-
-    public List<Course> getCourses() {
-
-        return courseRepository.findAll();
-    }
-
+    @Override
     public Course addCourse(Course course) {
         return courseRepository.save(course);
     }
 
-    public String deleteCourse(String id) {
-        courseRepository.deleteById(id);;
-        return "Course deleted successfuly";
+    @Override
+    public Course updateCourse(Course course) {
+        return courseRepository.save(course);
     }
 
-    public Course updateCourseByOwner(String id, Course newCourse) {
-		Course c = courseRepository.findById(id).get();
-		if(newCourse.getName()!= null) {
-			c.setName(newCourse.getName());
-		}
-		if(newCourse.getDescription()!= null) {
-			c.setDescription(newCourse.getDescription());
-		}
-		if(newCourse.getCategory()!= null) {
-			c.setCategory(newCourse.getCategory());
-		}
-		return courseRepository.save(c);
-	
-	}
+    @Override
+    public void deleteCourse(String id) {
+        courseRepository.deleteById(id);
+    }
 
-    public Course getCourseById(String id) {
-		return courseRepository.findById(id).get();
-	}
+    @Override
+    public Optional<Course> getCourseById(String id) {
+        return courseRepository.findById(id);
+    }
 
-    public List<Course> getCoursesByName(String name) {
-        List<Course>courses=courseRepository.getCoursesByName(name);
-		return courses;
-	}
+    @Override
+    public List<Course> getCourseByName(String name) {
+        return courseRepository.findByName(name);
+    }
 
-    // public List<Course> getCoursesByOwner(String ownerId) {
-	// 	List<Course>courses=courseRepository.findReclamationsByOwnerId(ownerId);
-	// 	return courses;
-	// }
+    @Override
+    public List<Course> getCourses() {
+        return courseRepository.findAll();
+    }
+    @Override
+    public List<Course> getCourseByCategory(String category) {
+        return courseRepository.findByCategory(category);
+    }
 }
 
 

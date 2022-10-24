@@ -1,54 +1,95 @@
 package com.example.courseservice.controllers;
 
 import com.example.courseservice.entities.Course;
-import com.example.courseservice.services.CourseService;
 import com.example.courseservice.services.ICourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/courses")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CourseController {
     @Autowired
-    private CourseService courseService;
+    private ICourseService courseService;
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Course>> getCourses(){
-        return new ResponseEntity<List<Course>>(courseService.getCourses(), HttpStatus.OK);
+        try {
+            List<Course> courses = courseService.getCourses();
+            if (courses.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(courses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-    @PostMapping("/add")
-    public ResponseEntity<Course> addCourse (@RequestBody Course course){
-        return new ResponseEntity<Course>(courseService.addCourse(course),HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<Course> addCourse(@RequestBody Course course){
+        try {
+            Course newCourse = courseService.addCourse(course);
+            return new ResponseEntity<>(newCourse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-    @PutMapping("/update/{id}")
-	public ResponseEntity<Course> updateCourseByOwner (@PathVariable("id") String id,@RequestBody Course course){
-		return new ResponseEntity<Course>(courseService.updateCourseByOwner(id, course),HttpStatus.OK);
-	}
-
-    @DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> deleteCourse (@PathVariable("id") String id){
-        if(courseService.getCourseById(id) != null)
-		return new ResponseEntity<String>(courseService.deleteCourse(id),HttpStatus.OK);
-        else
-        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-	}
-
+    @PutMapping
+    public ResponseEntity<Course> updateCourse(@RequestBody Course course){
+        try {
+            Course newCourse = courseService.updateCourse(course);
+            return new ResponseEntity<>(newCourse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteCourse(@PathVariable("id") String id){
+        try {
+            courseService.deleteCourse(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping("/{id}")
-	public ResponseEntity<Course>getReclamation(@PathVariable("id") String id){
-		return new ResponseEntity<Course>(courseService.getCourseById(id),HttpStatus.OK);
-	}
-	@GetMapping("/title")
-	public ResponseEntity<List<Course>>getReclamationsByTitle(@RequestParam("name")String name){
-		return new ResponseEntity<List<Course>>(courseService.getCoursesByName(name),HttpStatus.OK);
-	}
+    public ResponseEntity<Course> getCourseById(@PathVariable("id") String id){
+        try {
+            Course course = courseService.getCourseById(id).get();
+            if (course == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(course, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Course>> getCourseByName(@PathVariable("name") String name){
+        try {
+            List<Course> courses = courseService.getCourseByName(name);
+            if (courses.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(courses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Course>> getCourseByCategory(@PathVariable("category") String category){
+        try {
+            List<Course> courses = courseService.getCourseByCategory(category);
+            if (courses.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(courses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
