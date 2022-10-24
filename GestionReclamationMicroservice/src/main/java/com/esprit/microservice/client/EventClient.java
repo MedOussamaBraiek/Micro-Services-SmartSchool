@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.esprit.microservice.bean.EventResponse;
 
 
-@FeignClient(name = "EVENT" ,url="localhost:8090" , configuration = FeignClientConfiguration.class)
+@FeignClient(name = "EVENT" ,configuration = FeignClientConfiguration.class)
 
 public interface EventClient {
 	
