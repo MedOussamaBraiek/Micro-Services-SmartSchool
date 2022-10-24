@@ -7,7 +7,7 @@ import school.micro.user.models.User;
 
 public interface UserService {
 
-    User saveUser (User user );
+    User saveUser (User user,String role );
     Role saveRole (Role role);
     void assignRoleToUser (String userName,String roleName);
     User getUser (String username);

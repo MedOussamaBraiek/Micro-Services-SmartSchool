@@ -23,10 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.management.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
@@ -52,10 +56,14 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
+<<<<<<< HEAD
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<User>addUser(@RequestBody User user){
+=======
+    public ResponseEntity<User>addUser(@RequestBody User user, @QueryParam("role") String role){
+>>>>>>> 4cb659bfdc8d66c4b3b31f5e26960119311bf651
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path(("api/user/save")).toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+        return ResponseEntity.created(uri).body(userService.saveUser(user,role));
     }
     @PostMapping("/role/save")
     @CrossOrigin(origins = "http://localhost:3000")

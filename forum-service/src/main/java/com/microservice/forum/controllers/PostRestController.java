@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,19 +22,20 @@ import com.microservice.forum.services.IPostService;
 
 @RestController
 @RequestMapping("posts")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PostRestController {
 
 	@Autowired
 	IPostService iPostService;
 
-	@PostMapping("/add")
+	@PostMapping
 	public ResponseEntity<Post> addPost(@RequestBody Post post) {
 
 		return new ResponseEntity<Post>(iPostService.AddPost(post), HttpStatus.CREATED);
 
 	}
 
-	@PutMapping("/update")
+	@PutMapping
 	public ResponseEntity<Post> update(@RequestBody Post post) {
 
 		return new ResponseEntity<Post>(iPostService.updatePost(post), HttpStatus.OK);

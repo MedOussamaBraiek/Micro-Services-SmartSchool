@@ -44,9 +44,11 @@ public class ReclamationController {
 	@PostMapping("/add")
 	@CrossOrigin(origins = "http://localhost:3000")
 	public ResponseEntity<Reclamation> addReclamation (@RequestBody Reclamation reclamation){
+
 	//UserResponse user=userClient.getUser(request.getHeader(AUTHORIZATION));
 	//reclamation.setOwnerId(user.getId());
 		reclamation.setStatus(false);
+
 		return new ResponseEntity<Reclamation>(reclamationService.addReclamation(reclamation),HttpStatus.CREATED);
 	}
 	@PutMapping("/update/{id}")

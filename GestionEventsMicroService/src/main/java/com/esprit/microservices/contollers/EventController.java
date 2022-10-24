@@ -1,7 +1,11 @@
 package com.esprit.microservices.contollers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,9 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.esprit.microservices.bean.ReclamationResponse;
+import com.esprit.microservices.client.ReclamationClient;
 import com.esprit.microservices.entities.Event;
 import com.esprit.microservices.services.IServiceEvent;
-
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/events")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -29,10 +35,17 @@ public class EventController {
 
 	@Autowired
 	IServiceEvent serviceEvent ;
+
+	
+	@Autowired
+    com.esprit.microservices.client.UserClient userClient;
+	@Autowired
+	ReclamationClient reclamationClient ;
+	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/add")
-	public ResponseEntity<Event> addEvent (@RequestBody Event event){
-		return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);
+	public ResponseEntity<Event> addEvent (@RequestBody Event event,HttpServletRequest request){
+	    return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);		
 	}
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PutMapping("/update/{id}")
@@ -61,7 +74,25 @@ public class EventController {
 	}
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/date")
-	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
-		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date),HttpStatus.OK);
+	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date1")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,@RequestParam("date2")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date2){
+		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date1,date2),HttpStatus.OK);
+	}
+	@PostMapping("/assign")
+    public ResponseEntity<Event>assignRecs(@RequestParam("eventId")int Evid,@RequestParam("reclamationId")String recId){
+        return new ResponseEntity<Event>(serviceEvent.assignRecToEvent(Evid, recId),HttpStatus.OK);
+    }
+	
+	@GetMapping("/reclamations/{id}")
+	public ResponseEntity<List<ReclamationResponse>>getRecsByEvent(@PathVariable("id")int id){
+	    Event event = serviceEvent.getEvent(id);
+	    List<ReclamationResponse> reclamations = new ArrayList<>();
+	    event.getReclamations().stream().forEach(r->{
+	        reclamations.add(reclamationClient.getReclamationById(r));
+	    });
+        return new ResponseEntity<List<ReclamationResponse>>(reclamations ,HttpStatus.OK);
+    }
+	@GetMapping("/eventsAndRecs")
+	public ResponseEntity<Map<String, Integer>>getEventsAndRecs(){
+	    return new ResponseEntity<Map<String,Integer>>(serviceEvent.getEventsAndnumberOfRecs(),HttpStatus.OK);
 	}
 }

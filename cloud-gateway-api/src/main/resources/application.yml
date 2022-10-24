@@ -6,6 +6,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
+
 spring:
   application:
     name: gateway
@@ -19,6 +20,7 @@ spring:
             allowedOrigins: "http://localhost:3000"
             allowedMethods: "*"
             allowedHeaders: "*"
+
       routes:
         - id: reclamationModule
           uri: http://localhost:8040/

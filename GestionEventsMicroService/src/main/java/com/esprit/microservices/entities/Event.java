@@ -1,8 +1,12 @@
 package com.esprit.microservices.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,4 +41,8 @@ public class Event implements Serializable {
 	private EventType type ;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private Date eventDate ;
+	private String owner;
+	 @Column
+	 @ElementCollection(targetClass=String.class)
+	private List<String> reclamations =new ArrayList<>();
 }
