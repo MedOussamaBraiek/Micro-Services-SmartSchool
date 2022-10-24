@@ -43,7 +43,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class UserController {
 
     private final UserService userService;
@@ -55,7 +55,14 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
+
     @CrossOrigin(origins = "http://localhost:3000")
+ 
+
+
+
+//    @CrossOrigin(origins = "http://localhost:3000")
+//    public ResponseEntity<User>addUser(@RequestBody User user){
     public ResponseEntity<User>addUser(@RequestBody User user, @QueryParam("role") String role){
 
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path(("api/user/save")).toUriString());
@@ -80,8 +87,12 @@ public class UserController {
     public User currentUserName(Principal principal) {
         return userService.getUser(principal.getName());
     }
-    
-    
+
+    @GetMapping(value = "/user/{id}")
+    @ResponseBody
+    public User getUserById(@PathVariable("id")String id) {
+        return userService.getUserById(id);
+    }
     
     @GetMapping("/refresh")
     @CrossOrigin(origins = "http://localhost:3000")

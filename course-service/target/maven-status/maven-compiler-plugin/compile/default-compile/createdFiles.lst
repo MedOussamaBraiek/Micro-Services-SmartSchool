@@ -1,6 +1,0 @@
-com\example\courseservice\controllers\CourseController.class
-com\example\courseservice\entities\Course.class
-com\example\courseservice\services\ICourseService.class
-com\example\courseservice\repositories\CourseRepository.class
-com\example\courseservice\CourseServiceApplication.class
-com\example\courseservice\services\CourseService.class
