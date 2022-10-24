@@ -74,11 +74,11 @@ public class EventController {
 	}
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/date")
-	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date1")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,@RequestParam("date2")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date2){
+	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date1")@DateTimeFormat(pattern = "dd-MM-yyyy") Date date1,@RequestParam("date2")@DateTimeFormat(pattern = "dd-MM-yyyy") Date date2){
 		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date1,date2),HttpStatus.OK);
 	}
 	@PostMapping("/assign")
-    public ResponseEntity<Event>assignRecs(@RequestParam("eventId")int Evid,@RequestParam("reclamationId")String recId){
+    public ResponseEntity<Event>assignRecs(@RequestParam(required = false,name = "eventId")int Evid,@RequestParam(required = false,name = "reclamationId")String recId){
         return new ResponseEntity<Event>(serviceEvent.assignRecToEvent(Evid, recId),HttpStatus.OK);
     }
 	

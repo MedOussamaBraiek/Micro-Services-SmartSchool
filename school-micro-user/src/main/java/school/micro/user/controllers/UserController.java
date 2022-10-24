@@ -42,7 +42,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000")
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
@@ -56,12 +55,9 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-<<<<<<< HEAD
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<User>addUser(@RequestBody User user){
-=======
     public ResponseEntity<User>addUser(@RequestBody User user, @QueryParam("role") String role){
->>>>>>> 4cb659bfdc8d66c4b3b31f5e26960119311bf651
+
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path(("api/user/save")).toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user,role));
     }
