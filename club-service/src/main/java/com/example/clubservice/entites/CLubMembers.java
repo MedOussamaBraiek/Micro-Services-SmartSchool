@@ -22,7 +22,4 @@ public class CLubMembers {
     @ManyToOne
     private Club club;
     private Long memberId;
-    private String role;
-
-
 }
