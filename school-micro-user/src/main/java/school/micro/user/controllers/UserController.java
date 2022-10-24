@@ -44,26 +44,35 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/users")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<List<User>> getUsers(){
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @PostMapping("/user/save")
+<<<<<<< HEAD
+    @CrossOrigin(origins = "http://localhost:3000")
+    public ResponseEntity<User>addUser(@RequestBody User user){
+=======
     public ResponseEntity<User>addUser(@RequestBody User user, @QueryParam("role") String role){
+>>>>>>> 4cb659bfdc8d66c4b3b31f5e26960119311bf651
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path(("api/user/save")).toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user,role));
     }
     @PostMapping("/role/save")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Role>addRole(@RequestBody Role role){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path(("api/role/save")).toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
     @PostMapping("/role/assign")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Role>assignRoleToUser(@RequestBody ModelUserForm form){
         userService.assignRoleToUser(form.getUserName(),form.getRoleName());
         return ResponseEntity.ok().build();
@@ -71,6 +80,7 @@ public class UserController {
     
     @GetMapping(value = "/username")
     @ResponseBody
+    @CrossOrigin(origins = "http://localhost:3000")
     public User currentUserName(Principal principal) {
         return userService.getUser(principal.getName());
     }
@@ -82,6 +92,7 @@ public class UserController {
     }
     
     @GetMapping("/refresh")
+    @CrossOrigin(origins = "http://localhost:3000")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorisationHeader = request.getHeader(AUTHORIZATION);
         if (authorisationHeader != null && authorisationHeader.startsWith("Bearer ")){
