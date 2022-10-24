@@ -9,4 +9,5 @@ import school.micro.user.models.User;
 public interface UserRepo extends MongoRepository <User,String> {
 
     User findAppUserByUserName(String userName);
+    User findAppUserById(String id);
 }

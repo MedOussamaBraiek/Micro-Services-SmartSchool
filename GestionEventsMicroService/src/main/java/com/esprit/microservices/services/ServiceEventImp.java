@@ -39,13 +39,8 @@ public class ServiceEventImp implements IServiceEvent {
 
 	@Override
 	public Event updateEvent(int id, Event newEvent) {
-		Event e = repo.findById(id).get();
-		e.setTitle(newEvent.getTitle());
-		e.setDescription(newEvent.getDescription());
-		e.setEventDate(newEvent.getEventDate());
-		e.setType(newEvent.getType());
-
-		return repo.save(e);
+	    newEvent.setId(id);
+		return repo.save(newEvent);
 	}
 
 	@Override
@@ -83,4 +78,5 @@ public class ServiceEventImp implements IServiceEvent {
         return eventsMap;
     }
 
+    
 }

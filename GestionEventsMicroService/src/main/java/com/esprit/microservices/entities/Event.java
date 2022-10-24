@@ -39,7 +39,7 @@ public class Event implements Serializable {
 	private String description ;
 	@Enumerated(EnumType.STRING)
 	private EventType type ;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@DateTimeFormat(pattern = "dd-MM-yyy")
 	private Date eventDate ;
 	private String owner;
 	 @Column

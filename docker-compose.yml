@@ -220,9 +220,9 @@ services:
       - eureka-server
       - nodeDB
     environment:
-      - EUREKA_HOST=eurka-server
-      - EUREKA_PORT=8761      
-      - DB_URI=mongodb://nodeDB:27017/classDB
+      - EUREKA_HOST=eureka-server
+      - EUREKA_PORT=8761  
+      - DB_URI=mongodb://nodeDB:27017/classDB    
   api-gateway:
     build:
       context: ./cloud-gateway-api

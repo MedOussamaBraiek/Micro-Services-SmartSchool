@@ -35,42 +35,50 @@ public class EventController {
 
 	@Autowired
 	IServiceEvent serviceEvent ;
+
+	
 	@Autowired
     com.esprit.microservices.client.UserClient userClient;
 	@Autowired
 	ReclamationClient reclamationClient ;
 	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/add")
 	public ResponseEntity<Event> addEvent (@RequestBody Event event,HttpServletRequest request){
 	    return new ResponseEntity<Event>(serviceEvent.addEvent(event),HttpStatus.CREATED);		
 	}
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Event> updateEvent (@PathVariable("id") int id,@RequestBody Event event){
 		return new ResponseEntity<Event>(serviceEvent.updateEvent(id, event),HttpStatus.OK);
 	}
+	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteEvent (@PathVariable("id") int id){
 		return new ResponseEntity<String>(serviceEvent.deleteEvent(id),HttpStatus.OK);
 	}
-	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/all")
 	public ResponseEntity<List<Event>>getEvents(){
 		return new ResponseEntity<List<Event>>(serviceEvent.getEvents(),HttpStatus.OK);
 	}
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/{id}")
 	public ResponseEntity<Event>getEvent(@PathVariable("id")int id){
 		return new ResponseEntity<Event>(serviceEvent.getEvent(id),HttpStatus.OK);
 	}
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/title")
 	public ResponseEntity<List<Event>>getEventsByTitle(@RequestParam("title")String title){
 		return new ResponseEntity<List<Event>>(serviceEvent.getEventByTitle(title),HttpStatus.OK);
 	}
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/date")
-	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date1")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,@RequestParam("date2")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date2){
+	public ResponseEntity<List<Event>>getEventsByDate(@RequestParam("date1")@DateTimeFormat(pattern = "dd-MM-yyyy") Date date1,@RequestParam("date2")@DateTimeFormat(pattern = "dd-MM-yyyy") Date date2){
 		return new ResponseEntity<List<Event>>(serviceEvent.getEventByDate(date1,date2),HttpStatus.OK);
 	}
 	@PostMapping("/assign")
-    public ResponseEntity<Event>assignRecs(@RequestParam("eventId")int Evid,@RequestParam("reclamationId")String recId){
+    public ResponseEntity<Event>assignRecs(@RequestParam(required = false,name = "eventId")int Evid,@RequestParam(required = false,name = "reclamationId")String recId){
         return new ResponseEntity<Event>(serviceEvent.assignRecToEvent(Evid, recId),HttpStatus.OK);
     }
 	

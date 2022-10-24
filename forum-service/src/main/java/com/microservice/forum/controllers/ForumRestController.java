@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 
+import com.microservice.forum.beans.ForumResponse;
 import com.microservice.forum.beans.UserResponse;
 import com.microservice.forum.client.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class ForumRestController {
 
 
     @PostMapping
-    public ResponseEntity<Forum> addPost(@RequestBody Forum forum) {
+    public ResponseEntity<Forum> addForum(@RequestBody Forum forum) {
 
         return new ResponseEntity<Forum>(iForumService.addForum(forum), HttpStatus.CREATED);
 
@@ -59,10 +60,8 @@ public class ForumRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") int id) {
-
         iForumService.deleteForum(id);
-
-        return new ResponseEntity<String>("Forum deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Forum deleted", HttpStatus.OK);
 
     }
 
@@ -74,9 +73,9 @@ public class ForumRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Forum>> getAllPosts() {
+    public ResponseEntity<List<ForumResponse>> getAllForums() {
 
-        return new ResponseEntity<List<Forum>>(iForumService.getAllForums(), HttpStatus.OK);
+        return new ResponseEntity<List<ForumResponse>>(iForumService.getAllForums(), HttpStatus.OK);
 
     }
 
@@ -88,9 +87,9 @@ public class ForumRestController {
     }
 
     @PutMapping("/forum/{id}")
-    public ResponseEntity<Forum> assignPostsToForums(@PathVariable("id") int id, @RequestBody List<Post> posList) {
+    public ResponseEntity<ForumResponse> assignPostsToForums(@PathVariable("id") int id, @RequestBody Post post) {
 
-        return new ResponseEntity<Forum>(iForumService.assignPostsToForums(posList, id), HttpStatus.OK);
+        return new ResponseEntity<>(iForumService.assignPostsToForums(post, id), HttpStatus.OK);
     }
 
     @PutMapping("/date")
@@ -101,9 +100,9 @@ public class ForumRestController {
     }
 
     @PutMapping("/type")
-    public ResponseEntity<List<Forum>> getForumByDate(@RequestParam("type") ForumType type) {
+    public ResponseEntity<List<ForumResponse>> getForumByDate(@RequestParam("type") ForumType type) {
 
-        return new ResponseEntity<List<Forum>>(iForumService.findForumsByType(type), HttpStatus.OK);
+        return new ResponseEntity<>(iForumService.findForumsByType(type), HttpStatus.OK);
 
     }
 
@@ -113,6 +112,25 @@ public class ForumRestController {
         return userClient.getUser();
 
     }
+
+    @GetMapping("/getUser/{id}")
+    public UserResponse getUserById(@PathVariable("id")String id) {
+        return userClient.getUserById(id);
+
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ForumResponse>>getFiltredForums(
+            @RequestParam(name = "title",required = false)String title,
+            @RequestParam(name="type",required = false)String type,
+            @RequestParam(name="userName",required=false)String userName,
+            @RequestParam(name="startDate",required=false)@DateTimeFormat(pattern = "yyyy-MM-dd")Date date
+
+    ){
+        return new ResponseEntity<>(iForumService.filterForums(title,type,userName,date),HttpStatus.OK);
+    }
+
 
 
 }
